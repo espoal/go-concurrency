@@ -4,19 +4,21 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
+	"sync/atomic"
 	"time"
 )
 
-func HttpServer(parallelism int) {
+func AtomicServer(parallelism int) {
 
 	runtime.GOMAXPROCS(parallelism)
 
-	called := 0
+	var called uint32 = 0
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		time.Sleep(2 * time.Second)
-		called++
-		fmt.Fprint(w, called)
+		value := atomic.AddUint32(&called, 1)
+		//value := atomic.LoadUint32(&called)
+		fmt.Fprint(w, value)
 	})
 
 	http.ListenAndServe(":8090", nil)

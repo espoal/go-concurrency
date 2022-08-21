@@ -1,13 +1,9 @@
 package main
 
-import (
-	"go-concurrency/v2/pkgs/httpServer"
-	"runtime"
-)
+import "go-concurrency/v2/pkgs/httpServer"
 
 func main() {
 
-	runtime.GOMAXPROCS(4)
-
-	httpServer.HttpServer()
+	// httpServer.HttpServer(1)
+	httpServer.AtomicServer(6)
 }
