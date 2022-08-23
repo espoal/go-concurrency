@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 	"runtime"
-	"time"
+	"strconv"
 )
 
 func fetch(responseChannel chan string) {
@@ -28,7 +28,6 @@ func HttpClient(concurrency int, parallelism int) {
 	countMap := make(map[string]bool, concurrency)
 	responseChannel := make(chan string, concurrency)
 	n := 0
-	start := time.Now()
 	for n < concurrency {
 		go fetch(responseChannel)
 		n++
@@ -46,9 +45,15 @@ func HttpClient(concurrency int, parallelism int) {
 		}
 		n++
 	}
-	elapsed := time.Since(start)
 
-	fmt.Println("Time taken: ", elapsed)
+	n = 1
+	for n < concurrency+1 {
+		if !countMap[strconv.Itoa(n)] {
+			fmt.Println("Missing: ", n)
+		}
+		n++
+	}
+
 	fmt.Println("Data races: ", dataRaces)
 	fmt.Println("Missing: ", dataRaces+len(countMap)-concurrency)
 

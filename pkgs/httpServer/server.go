@@ -16,7 +16,8 @@ func HttpServer(parallelism int) {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		time.Sleep(2 * time.Second)
 		called++
-		fmt.Fprint(w, called)
+		temp := called
+		fmt.Fprint(w, temp)
 	})
 
 	http.ListenAndServe(":8090", nil)
